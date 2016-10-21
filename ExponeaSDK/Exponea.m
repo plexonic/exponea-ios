@@ -512,7 +512,7 @@ static NSMutableDictionary *initCustomer;
 + (void)getCurrentSegment:(NSString *)segmentationId withProjectSecret:(NSString *)projectSecretToken withCallBack:(onSegmentReceive)callback{
     @try {
         Exponea *exponea = [Exponea getStaticInstance];
-        NSString *target = exponea.target ? target : @"https://api.exponea.com";
+        NSString *target = exponea.target ? target : @"https://api.infinario.com";
         
         if ([target hasPrefix:@"https"]) {
             
