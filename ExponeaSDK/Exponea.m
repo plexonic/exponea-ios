@@ -530,7 +530,7 @@ static NSMutableDictionary *initCustomer;
             [request setHTTPMethod:@"POST"];
             [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
             [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-            [request setValue:projectSecretToken forHTTPHeaderField:@"X-Exponea-Secret"];
+            [request setValue:projectSecretToken forHTTPHeaderField:@"X-Infinario-Secret"];
     
             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:body options:0 error:nil];
     
