@@ -20,7 +20,7 @@ Usage
 -----
 ### Basic Interface ###
 
-Once the IDE is set up, you may start using the Exponea library in your code. Firstly, you need to import main header file **ExponeaSDK.h** with the following code:  ```#import <ExponeaSDK/ExponeaSDK.h> ```. Secondly, you need to know the URI of your Exponea API instance (usually  ```https://api.infinario.com ```)and your project  ```token ``` (located on the Project management / Overview page in the web application). To interact with the Exponea SDK, you need to obtain a shared instance of the Exponea class using the project  `token` (the URI parameter is optional):
+Once the IDE is set up, you may start using the Exponea library in your code. Firstly, you need to import main header file **ExponeaSDK.h** with the following code:  ```#import <ExponeaSDK/ExponeaSDK.h> ```. Secondly, you need to know the URI of your Exponea API instance (usually  ```https://api.infinario.com ``` or ```https://api.exponea.com ```)and your project  ```token ``` (located on the Project management / Overview page in the web application). To interact with the Exponea SDK, you need to obtain a shared instance of the Exponea class using the project  `token` (the URI parameter is optional):
 
 ```
 // Use public Exponea instance
