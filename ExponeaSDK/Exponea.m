@@ -402,8 +402,9 @@ static NSMutableDictionary *initCustomer;
     [exponea.commandManager flush];
 }
 
-- (NSString *)getCookie {
-    return [self.preferences objectForKey:@"cookie" withDefault:@""];
++ (NSString *)getCookie {
+    Exponea *exponea = [Exponea getStaticInstance];
+    return [exponea.preferences objectForKey:@"cookie" withDefault:@""];
 }
 
 - (void)setupDelayedFlush {

@@ -60,4 +60,6 @@ typedef void (^onSegmentReceive) (BOOL wasSuccessful, ExponeaSegment *segment, N
 
 + (void)getCurrentSegment:(NSString *)segmentationId withProjectSecret:(NSString *)projectSecretToken withCallBack:(onSegmentReceive)callback;
 
++ (NSString *)getCookie;
+
 @end
