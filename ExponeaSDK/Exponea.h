@@ -24,6 +24,9 @@ typedef void (^onSegmentReceive) (BOOL wasSuccessful, ExponeaSegment *segment, N
 + (id)sharedInstanceWithToken:(NSString *)token andWithCustomer:(NSString *)customer DEPRECATED_ATTRIBUTE;
 + (id)sharedInstanceWithToken:(NSString *)token DEPRECATED_ATTRIBUTE;
 
++ (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithCustomerDict:(NSMutableDictionary *)customer andWithAutomaticPayments:(BOOL)automaticPayments andWithAutomaticSessions:(BOOL)automaticSessions;
++ (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithAutomaticPayments:(BOOL)automaticPayments andWithAutomaticSessions:(BOOL)automaticSessions;
++ (id)getInstance:(NSString *)token andWithAutomaticPayments:(BOOL)automaticPayments andWithAutomaticSessions:(BOOL)automaticSessions;
 + (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithCustomerDict:(NSMutableDictionary *)customer;
 + (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithCustomer:(NSString *)customer;
 + (id)getInstance:(NSString *)token andWithTarget:(NSString *)target;

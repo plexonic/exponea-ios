@@ -20,9 +20,13 @@
 int const FLUSH_COUNT = 50;
 double const FLUSH_DELAY = 10.0;
 double const SESSION_TIMEOUT = 6.0;
+BOOL const DEFAULT_AUTOMATIC_PAYMENTS = YES;
+BOOL const DEFAULT_AUTOMATIC_SESSIONS = YES;
 
 @interface Exponea ()
 
+@property BOOL automaticPayments;
+@property BOOL automaticSessions;
 @property NSString *token;
 @property NSString *target;
 @property NSMutableDictionary *customer;
@@ -45,10 +49,15 @@ double const SESSION_TIMEOUT = 6.0;
 static NSString *initToken;
 static NSString *initTarget;
 static NSMutableDictionary *initCustomer;
+static BOOL initAutomaticPayments;
+static BOOL initAutomaticSessions;
 
-- (instancetype)initWithToken:(NSString *)token andWithTarget:(NSString *)target andWithCustomer:(NSMutableDictionary *)customer {
+- (instancetype)initWithToken:(NSString *)token andWithTarget:(NSString *)target andWithCustomer:(NSMutableDictionary *)customer andWithAutomaticPayments:(BOOL)automaticPayments andWithAutomaticSessions:(BOOL)automaticSessions{
     self = [super init];
     
+    
+    self.automaticPayments = automaticPayments;
+    self.automaticSessions = automaticSessions;
     self.token = token;
     self.target = target;
     self.sessionTimeOut = SESSION_TIMEOUT;
@@ -64,8 +73,9 @@ static NSMutableDictionary *initCustomer;
     
     _automaticFlushing = [[self.preferences objectForKey:@"automatic_flushing" withDefault:@YES] boolValue];
     
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-    
+    if(self.automaticPayments) {
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    }
     if (!customer){
         customer = [NSMutableDictionary dictionary];
     }
@@ -73,6 +83,8 @@ static NSMutableDictionary *initCustomer;
     self.customer = customer;
     self.lockSessionAccess = [[NSObject alloc] init];
     
+    initAutomaticPayments = automaticPayments;
+    initAutomaticSessions = automaticSessions;
     initToken = token;
     initTarget = target;
     initCustomer = customer;
@@ -84,13 +96,13 @@ static NSMutableDictionary *initCustomer;
     return self;
 }
 
-+ (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithCustomerDict:(NSMutableDictionary *)customer {
++ (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithCustomerDict:(NSMutableDictionary *)customer andWithAutomaticPayments:(BOOL)automaticPayments andWithAutomaticSessions:(BOOL)automaticSessions {
     static dispatch_once_t p = 0;
     
     __strong static id _sharedObject = nil;
     
     dispatch_once(&p, ^{
-        _sharedObject = [[self alloc] initWithToken:token andWithTarget:target andWithCustomer:customer];
+        _sharedObject = [[self alloc] initWithToken:token andWithTarget:target andWithCustomer:customer andWithAutomaticPayments:automaticPayments andWithAutomaticSessions:automaticSessions];
     });
     
     return _sharedObject;
@@ -99,11 +111,11 @@ static NSMutableDictionary *initCustomer;
     if (initToken == nil) {
         NSLog(@"WARNING: Exponea has not been initialized yet. You should call one of getInstance:andWithTarget: or sharedInstanceWithToken:andWithTarget: methods.");
     }
-    return [self getInstance:initToken andWithTarget:initTarget andWithCustomerDict:initCustomer];
+    return [self getInstance:initToken andWithTarget:initTarget andWithCustomerDict:initCustomer andWithAutomaticPayments:initAutomaticPayments andWithAutomaticSessions:initAutomaticSessions];
 }
 
 + (id)sharedInstanceWithToken:(NSString *)token andWithTarget:(NSString *)target andWithCustomerDict:(NSMutableDictionary *)customer {
-    return [self getInstance:token andWithTarget:target andWithCustomerDict:customer];
+    return [self getInstance:token andWithTarget:target andWithCustomerDict:customer andWithAutomaticPayments:DEFAULT_AUTOMATIC_PAYMENTS andWithAutomaticSessions:DEFAULT_AUTOMATIC_SESSIONS];
 }
 
 + (id)sharedInstanceWithToken:(NSString *)token andWithTarget:(NSString *)target andWithCustomer:(NSString *)customer {
@@ -126,24 +138,32 @@ static NSMutableDictionary *initCustomer;
     return [self getInstance:token andWithTarget:nil andWithCustomerDict:nil];
 }
 
++ (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithAutomaticPayments:(BOOL)automaticPayments andWithAutomaticSessions:(BOOL)automaticSessions {
+     return [self getInstance:token andWithTarget:target andWithCustomerDict:nil andWithAutomaticPayments:automaticPayments andWithAutomaticSessions:automaticSessions];
+}
+
++ (id)getInstance:(NSString *)token andWithAutomaticPayments:(BOOL)automaticPayments andWithAutomaticSessions:(BOOL)automaticSessions {
+    return [self getInstance:token andWithTarget:nil andWithCustomerDict:nil andWithAutomaticPayments:automaticPayments andWithAutomaticSessions:automaticSessions];
+}
+
 + (id)getInstance:(NSString *)token andWithTarget:(NSString *)target andWithCustomer:(NSString *)customer {
-    return [self getInstance:token andWithTarget:target andWithCustomerDict:[self customerDict:customer]];
+    return [self getInstance:token andWithTarget:target andWithCustomerDict:[self customerDict:customer] andWithAutomaticPayments:DEFAULT_AUTOMATIC_PAYMENTS andWithAutomaticSessions:DEFAULT_AUTOMATIC_SESSIONS];
 }
 
 + (id)getInstance:(NSString *)token andWithTarget:(NSString *)target {
-    return [self getInstance:token andWithTarget:target andWithCustomerDict:nil];
+    return [self getInstance:token andWithTarget:target andWithCustomerDict:nil andWithAutomaticPayments:DEFAULT_AUTOMATIC_PAYMENTS andWithAutomaticSessions:DEFAULT_AUTOMATIC_SESSIONS];
 }
 
 + (id)getInstance:(NSString *)token andWithCustomerDict:(NSMutableDictionary *)customer {
-    return [self getInstance:token andWithTarget:nil andWithCustomerDict:customer];
+    return [self getInstance:token andWithTarget:nil andWithCustomerDict:customer andWithAutomaticPayments:DEFAULT_AUTOMATIC_PAYMENTS andWithAutomaticSessions:DEFAULT_AUTOMATIC_SESSIONS];
 }
 
 + (id)getInstance:(NSString *)token andWithCustomer:(NSString *)customer {
-    return [self getInstance:token andWithTarget:nil andWithCustomerDict:[self customerDict:customer]];
+    return [self getInstance:token andWithTarget:nil andWithCustomerDict:[self customerDict:customer] andWithAutomaticPayments:DEFAULT_AUTOMATIC_PAYMENTS andWithAutomaticSessions:DEFAULT_AUTOMATIC_SESSIONS];
 }
 
 + (id)getInstance:(NSString *)token {
-    return [self getInstance:token andWithTarget:nil andWithCustomerDict:nil];
+    return [self getInstance:token andWithTarget:nil andWithCustomerDict:nil andWithAutomaticPayments:DEFAULT_AUTOMATIC_PAYMENTS andWithAutomaticSessions:DEFAULT_AUTOMATIC_SESSIONS];
 }
 
 + (NSMutableDictionary *)customerDict:(NSString *)customer {
@@ -383,10 +403,16 @@ static NSMutableDictionary *initCustomer;
 }
 
 - (void)appDidBecomeActive:(NSNotification *)notification {
-    [Exponea trackSessionStart];
+    if(initAutomaticSessions) {
+        NSLog(@"<EXPONEA> tracking automatic session start");
+        [Exponea trackSessionStart];
+    }
 }
 -(void)appWillResignActive:(NSNotification *)notification {
-    [Exponea trackSessionEnd];
+    if(initAutomaticSessions) {
+        NSLog(@"<EXPONEA> tracking automatic session end");
+        [Exponea trackSessionEnd];
+    }
 }
 
 + (void)flush {
