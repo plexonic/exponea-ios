@@ -504,7 +504,7 @@ static BOOL initAutomaticSessions;
         properties[@"payment_system"] = @"iTunes Store";
         properties[@"receipt"] = self.receipt64;
         
-        [Exponea track:@"payment" withProperties:properties];
+        [Exponea track:@"hard_purchase" withProperties:properties];
     }
 }
 
